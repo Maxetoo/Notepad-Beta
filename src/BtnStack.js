@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { createUndefinedPropError } from './ErrorHandler/Error'
 
 const BtnStack = (props) => {
   const {
@@ -21,6 +22,10 @@ const BtnStack = (props) => {
     overflow,
     shadow,
   } = props
+
+  useEffect(() => {
+    createUndefinedPropError(props.children)
+  }, [props])
   return (
     <div
       className='btn-stack--main'

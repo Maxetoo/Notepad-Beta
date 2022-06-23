@@ -109,8 +109,8 @@ const SabiBtn = (props) => {
     width,
     fontSize,
     height,
-    leftIcon = '',
-    rightIcon = '',
+    leftIcon,
+    rightIcon,
     borderRadius,
     onFocus,
     onClick,
@@ -118,9 +118,62 @@ const SabiBtn = (props) => {
     border,
   } = props
 
+  const propsObj = [
+    'btnType',
+    'size',
+    'theme',
+    'width',
+    'fontSize',
+    'height',
+    'leftIcon',
+    'rightIcon',
+    'borderRadius',
+    'onFocus',
+    'onClick',
+    'shadow',
+    'border',
+    'children',
+  ]
+
   useEffect(() => {
     setInspectBtnType(btnType)
   }, [btnType])
+
+  useEffect(() => {
+    if (!props.children) {
+      throw new Error('Component must accept children components')
+    }
+  }, [props.children])
+
+  useEffect(() => {
+    if (btnType === 'glow' && theme !== 'white') {
+      throw new Error('"glow" btnType prop must accept white as theme prop')
+    }
+  }, [btnType, theme])
+
+  useEffect(() => {
+    const keys = Object.keys(props)
+    let check = keys.filter((val) => !propsObj.includes(val))
+    if (check.length > 0) {
+      throw new Error(`${check} is not a prop in this component`)
+    }
+  }, [props])
+
+  useEffect(() => {
+    const key = Object.keys(colorThemes)
+    const check = key.includes(theme)
+    if (!check) {
+      throw new Error(`invalid color theme!. Checkout these: ${key}`)
+    }
+  }, [theme])
+
+  useEffect(() => {
+    const key = Object.keys(sizes)
+    const checks = key.includes(size)
+    if (!checks) {
+      throw new Error(`invalid size!. Checkout these: ${key}`)
+    }
+  }, [size])
   return (
     <button
       ref={btnTarget}
