@@ -47,6 +47,7 @@ const Wrapper = styled.header`
     position: fixed;
     top: 0;
     z-index: 100;
+    margin-bottom: 1.5rem;
   }
 
   a > .icon-nav-home {
