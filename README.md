@@ -1,1 +1,1 @@
-Created a replica of notepad in 2days
+A replica of Notepad with create, edit and search feature
