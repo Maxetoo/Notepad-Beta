@@ -1,33 +1,64 @@
-import React from 'react'
-import BtnStack from './BtnStack'
-import SabiBtn from './SabiBtn'
-import { MdEmail } from 'react-icons/md'
-import { BsFillAlarmFill } from 'react-icons/bs'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  HomePage,
+  NotePage,
+  SingleNotePage,
+  SearchPage,
+  ErrorPage,
+} from './pages'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import {
+  selectColor,
+  hideBtn,
+  loadFilter,
+  getLocalStorage,
+  getColorIndex,
+} from './slices/eventSlice'
 
 function App() {
+  const { createdNotes, searchInput } = useSelector((store) => store.note)
+  const dispatch = useDispatch()
+  const pickColor = ['#ffab91', '#ffcc80', '#e8ed9b', '#d094da', '#82deeb']
+  let location = useLocation().pathname
+  useEffect(() => {
+    dispatch(getLocalStorage())
+  }, [createdNotes])
+
+  useEffect(() => {
+    dispatch(selectColor(pickColor))
+  }, [createdNotes])
+
+  useEffect(() => {
+    dispatch(getColorIndex())
+  }, [createdNotes])
+
+  useEffect(() => {
+    if (location === '/') {
+      dispatch(hideBtn())
+    }
+  }, [])
+
+  useEffect(() => {
+    dispatch(loadFilter())
+  }, [searchInput])
+
   return (
-    <main className='App'>
-      <BtnStack direction='row'>
-        {/* <SabiBtn size='s' leftIcon={<MdEmail />} width='200px'>
-          German
-        </SabiBtn>
-        <SabiBtn size='xs' btnType='outline' rightIcon={<BsFillAlarmFill />}>
-          Add
-        </SabiBtn>
-        <SabiBtn size='s' width='100px' btnType='glow' theme='white'>
-          Add
-        </SabiBtn>
-        <SabiBtn theme='red' btnType='outline'>
-          Pressure
-        </SabiBtn>
-        <SabiBtn theme='blossom' btnType='faint'>
-          Maxy
-        </SabiBtn> */}
-        <SabiBtn theme='red'>Maxy</SabiBtn>
-        <SabiBtn size='s'>Name</SabiBtn>
-        <SabiBtn>Name</SabiBtn>
-      </BtnStack>
-    </main>
+    <React.Fragment>
+      <main className='main-app'>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/note' element={<NotePage />} />
+          <Route path='/note/:id' element={<SingleNotePage />} />
+          <Route path='/search' element={<SearchPage />} />
+          <Route path='*' element={<ErrorPage />} />
+        </Routes>
+      </main>
+      <div className='not-availabe'>
+        <h3>Opps!</h3>
+        <p>Sorry, This is only available on small screen</p>
+      </div>
+    </React.Fragment>
   )
 }
 
