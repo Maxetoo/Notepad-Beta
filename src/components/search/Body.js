@@ -2,8 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { FaTimes } from 'react-icons/fa'
-import { clearSearchHistory, removeSearchList } from '../../slices/eventSlice'
+import {
+  clearSearchHistory,
+  removeSearchList,
+  retrieveHistory,
+  searchEvent,
+} from '../../slices/eventSlice'
 import NoteList from './NoteList'
+import { MdEditNote } from 'react-icons/md'
 const Body = () => {
   const { searchHistory, searchInput, filteredNotes } = useSelector(
     (store) => store.note
@@ -17,7 +23,14 @@ const Body = () => {
             {searchHistory.map((value) => {
               const { name, id } = value
               return (
-                <div className='history-list' key={id}>
+                <div
+                  className='history-list'
+                  key={id}
+                  onClick={() => {
+                    dispatch(searchEvent(name))
+                    dispatch(retrieveHistory(name))
+                  }}
+                >
                   <p>{name}</p>
                   <span
                     onClick={() => {
@@ -40,11 +53,18 @@ const Body = () => {
             )}
           </div>
         )}
-        <div className='search-list-container'>
-          {filteredNotes.map((value) => {
-            return <NoteList {...value} key={value.id} />
-          })}
-        </div>
+        {searchInput && filteredNotes.length === 0 ? (
+          <div className='empty-search'>
+            <MdEditNote className='emp-icon' />
+            <p className='empty-text'>No search results</p>
+          </div>
+        ) : (
+          <div className='search-list-container'>
+            {filteredNotes.map((value) => {
+              return <NoteList {...value} key={value.id} />
+            })}
+          </div>
+        )}
       </div>
     </Wrapper>
   )
@@ -59,6 +79,24 @@ const Wrapper = styled.article`
     margin-top: 6rem;
     padding: 2rem;
     overflow: hidden;
+  }
+
+  .empty-search {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .emp-icon {
+    font-size: 5em;
+    opacity: 0.8;
+  }
+
+  .empty-text {
+    margin-top: 0.3rem;
+    font-size: 0.9em;
   }
 
   .search-history-container {
@@ -76,6 +114,7 @@ const Wrapper = styled.article`
     height: 40px;
     color: var(--white-color);
     padding: 0 1rem 0 1rem;
+    cursor: pointer;
   }
 
   span {

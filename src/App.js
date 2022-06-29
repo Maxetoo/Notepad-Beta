@@ -14,10 +14,13 @@ import {
   loadFilter,
   getLocalStorage,
   getColorIndex,
+  getHistoryStorage,
 } from './slices/eventSlice'
 
 function App() {
-  const { createdNotes, searchInput } = useSelector((store) => store.note)
+  const { createdNotes, searchInput, searchHistory } = useSelector(
+    (store) => store.note
+  )
   const dispatch = useDispatch()
   const pickColor = ['#ffab91', '#ffcc80', '#e8ed9b', '#d094da', '#82deeb']
   let location = useLocation().pathname
@@ -32,6 +35,10 @@ function App() {
   useEffect(() => {
     dispatch(getColorIndex())
   }, [createdNotes])
+
+  useEffect(() => {
+    dispatch(getHistoryStorage())
+  }, [searchHistory])
 
   useEffect(() => {
     if (location === '/') {

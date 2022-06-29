@@ -18,6 +18,14 @@ const setColorIndex = () => {
   }
 }
 
+const setHistoryStorage = () => {
+  const localStore = localStorage.getItem('createHistory')
+  if (localStore) {
+    return JSON.parse(localStorage.getItem('createHistory'))
+  } else {
+    return []
+  }
+}
 const initialState = {
   titleInput: '',
   noteInput: '',
@@ -34,7 +42,7 @@ const initialState = {
   filteredNotes: [],
   showDeleteBtn: false,
   deleteModal: false,
-  searchHistory: [],
+  searchHistory: setHistoryStorage(),
 }
 
 const eventSlice = createSlice({
@@ -63,7 +71,7 @@ const eventSlice = createSlice({
       }
       state.currentColor.colorName = colors[state.currentColor.colorIndex]
     },
-    createNote: (state, action) => {
+    createNote: (state) => {
       let inputTitle = state.titleInput
       let inputNote = state.noteInput
       let userIsEditing = state.isEditing
@@ -175,6 +183,12 @@ const eventSlice = createSlice({
     getColorIndex: (state) => {
       localStorage.setItem('colorIndex', state.currentColor.colorIndex)
     },
+    getHistoryStorage: (state) => {
+      localStorage.setItem('createHistory', JSON.stringify(state.searchHistory))
+    },
+    retrieveHistory: (state, action) => {
+      state.searchInput = action.payload
+    },
   },
 })
 
@@ -199,4 +213,6 @@ export const {
   loadFilter,
   getLocalStorage,
   getColorIndex,
+  getHistoryStorage,
+  retrieveHistory,
 } = eventSlice.actions
