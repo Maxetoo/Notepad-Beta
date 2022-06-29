@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { FaAngleLeft } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,9 +8,21 @@ const Header = () => {
   const { editId, isEditing } = useSelector((store) => store.note)
   let navigate = useNavigate()
   const dispatch = useDispatch()
+  const [isScrollTop, setIsScrollTop] = useState(false)
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 0) {
+        setIsScrollTop(true)
+      } else {
+        setIsScrollTop(false)
+      }
+    })
+  }, [isScrollTop])
+
   return (
     <Wrapper>
-      <div className='note-header'>
+      <div className={`note-header ${isScrollTop && 'add-tint'}`}>
         <Link to='/'>
           <div className='icon-nav-home'>
             <FaAngleLeft />
@@ -47,7 +59,13 @@ const Wrapper = styled.header`
     position: fixed;
     top: 0;
     z-index: 100;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    transition: 0.2s all;
+  }
+
+  .add-tint {
+    background: #1e1d1d;
+    padding-bottom: 2.5rem;
   }
 
   a > .icon-nav-home {
